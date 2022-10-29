@@ -20,12 +20,6 @@ const User = new mongoose.Schema({
             type: String,
             unique: false,
             trim: true
-        },
-        followers:{
-            type: Number
-        },
-        following:{
-
         }
     },
     {

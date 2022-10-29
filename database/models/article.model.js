@@ -7,12 +7,12 @@ const Article = new mongoose.Schema(
             unique: false,
             trim: true
         },
-        description:{
+        subtitle:{
             type: String,
             unique: false,
             trim: true
         },
-        data:{
+        description:{
             type: String,
             unique: false,
             trim: true
@@ -24,8 +24,11 @@ const Article = new mongoose.Schema(
         userID:{
             type: String,
             unique: false
-        }
-    },
+        },
+        createdBy:{
+            type: String,
+            unique: false
+        }    },
     {
         timestamps: Date.now,
         versionKey: false

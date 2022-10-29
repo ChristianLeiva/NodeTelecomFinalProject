@@ -6,11 +6,7 @@ const Joi = require('joi')
 const getAllArticles = async(req, res) =>{
     try {
         const results = await articleModel.find()
-        if(results.length === 0){
-            return res.status(200).send("Empty database")
-        }else{
-            return res.status(200).send(results)
-        }        
+        if(results)  return res.status(200).send(results)
     } catch (error) {
         res.status(400).send({
             code: "Bad request",
@@ -19,6 +15,23 @@ const getAllArticles = async(req, res) =>{
     }
 }
 
+const getAnArticlebyId = async(req, res) =>{
+    try {        
+        const result = await articleModel.findOne({_id : req.params.id})        
+        if(!result) return res.status(404).send({
+            code: "Bad request",
+            msg : "Article not found"
+        })
+
+        return res.status(200).send(result)
+
+    } catch (error) {
+        res.status(400).send({
+            code: "Bad request",
+            error
+        })       
+    }
+}
 const getAnArticlebyTitle = async(req, res) =>{
     try {
         const result = await articleModel.findOne({
@@ -43,7 +56,8 @@ const newArticle = async(req, res) =>{
         let data = req.body
         data={
             ...data,
-            userID: user._id
+            userID: user._id,
+            createdBy: user.username
         }
         Joi.assert(data, articleSchema)
         const newArticle = new articleModel(data)
@@ -71,8 +85,8 @@ const updateArticle = async(req, res) =>{
                     {_id : req.params.id},
                     {
                     title: data.title,
-                    description: data.description,
-                    data: data.data,
+                    subtitle: data.description,
+                    description: data.data,
                     image: data.image
                 })
                 return res.status(200).send("Article update succefuly")
@@ -111,9 +125,26 @@ const deleteArticle = async(req, res) =>{
     }
 }
 
+const getArticlesByCreator = async(req, res) =>{
+    try {
+        const {_id} = req.userData
+        const articles = await articleModel.find({userID : _id})
+        res.status(200).send(articles)
+        
+    } catch (error) {
+        res.status(400).send({
+            code: "Bad request",
+            error
+        })
+        
+    }
+}
+
 module.exports = {
     getAllArticles,
     getAnArticlebyTitle,
+    getAnArticlebyId,
+    getArticlesByCreator,
     newArticle,
     updateArticle,
     deleteArticle

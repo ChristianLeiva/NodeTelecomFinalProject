@@ -49,7 +49,10 @@ const newUser = async(req, res) =>{
         Joi.assert(data, userSchema)
         const user = new userModel(data)
         await user.save()
-        res.status(200).send("User created succefuly")        
+        res.status(200).send({
+            code: "ok",
+            msg: "User created succefuly"
+        })        
     } catch (error) {
         res.status(400).send({
             code: "bad request",
@@ -104,15 +107,19 @@ const login = async(req, res) =>{
     try {
         const user = await userModel.findOne({email: req.body.email})
         if(!user || user.password !== req.body.password){
-            return res.status(404).send("Invalid email or password")
+            return res.status(404).send({
+                code: "Bad request",
+                error: "Invalid email or password"
+            })
         }else{
             const payload = {
-                user
+                user,
             }
             const token = jwt.sign(payload, process.env.KEY )
 
             return res.status(200).send({
-                msg: "Welcome ",
+                username: user.username,
+                _id: user._id,
                 token
             })
         }        
