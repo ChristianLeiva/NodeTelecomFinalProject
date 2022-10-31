@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getAllArticles, newArticle , updateArticle, deleteArticle, getArticlesByCreator, getAnArticlebyId} = require('../controllers/articleController')
+const {getAllArticles, newArticle , updateArticle, deleteArticle, getArticlesByCreator, getAnArticlebyId, addComment} = require('../controllers/articleController')
 const {verifyIsLogged, verifyIsCreator} =  require('../middleware/user.middleware')
 
 router.get('/', getAllArticles)
@@ -16,5 +16,7 @@ router.post('/', verifyIsLogged, newArticle)
 router.put('/:id', verifyIsCreator, updateArticle  )
 
 router.delete('/:id', verifyIsCreator, deleteArticle )
+
+router.post('/comment/:articleId', verifyIsLogged, addComment)
 
 module.exports = router

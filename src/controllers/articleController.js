@@ -1,6 +1,7 @@
 const articleModel = require('../../database/models/article.model')
 const articleSchema = require('../../database/models/joiSchemas/article.schema')
 const Joi = require('joi')
+const commentSchema = require('../../database/models/joiSchemas/comment.schema')
 
 
 const getAllArticles = async(req, res) =>{
@@ -103,6 +104,7 @@ const updateArticle = async(req, res) =>{
 }
 
 const deleteArticle = async(req, res) =>{
+    
     try {
         const user = req.userData
         const article = await articleModel.findById({_id : req.params.id})
@@ -140,6 +142,29 @@ const getArticlesByCreator = async(req, res) =>{
     }
 }
 
+const addComment = async(req, res)=>{
+    const {articleId} = req.params; 
+    const {username} = req.userData
+    try {
+        const article = await articleModel.findById({_id : articleId})
+        if(!article){
+            return res.status(404).send("Article not found");
+        }
+
+        Joi.assert(req.body, commentSchema)
+        article.comments.push({username, ...req.body })
+        await articleModel.updateOne({_id: articleId}, article)
+        res.status(200).send(article)      
+        
+    } catch (error) {
+        res.status(400).send({
+            code: "Bad request",
+            error
+        })  
+    }
+
+}
+
 module.exports = {
     getAllArticles,
     getAnArticlebyTitle,
@@ -147,5 +172,6 @@ module.exports = {
     getArticlesByCreator,
     newArticle,
     updateArticle,
-    deleteArticle
+    deleteArticle,
+    addComment
 }

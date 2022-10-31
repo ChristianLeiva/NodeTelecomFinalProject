@@ -3,6 +3,7 @@ const {verifyToken} = require('../helpers/verifyToken')
 
 const verifyIsLogged = (req, res, next ) =>{
     const token = verifyToken( req )
+    console.log("TOKEN",token)
     if(token){
         try {
             let decodedToken = jwt.verify(token, process.env.KEY)

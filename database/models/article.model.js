@@ -1,34 +1,46 @@
 const mongoose = require('mongoose')
 
+const Comment = new mongoose.Schema({
+    username: String,
+    comment: String
+},
+{
+    timestamps: Date.now,
+    versionKey: false
+})
+
+
 const Article = new mongoose.Schema(
     {
-        title:{
+        title: {
             type: String,
             unique: false,
             trim: true
         },
-        subtitle:{
+        subtitle: {
             type: String,
             unique: false,
             trim: true
         },
-        description:{
+        description: {
             type: String,
             unique: false,
             trim: true
         },
-        image:{
+        image: {
             type: String,
             unique: false
         },
-        userID:{
+        userID: {
             type: String,
             unique: false
         },
-        createdBy:{
+        createdBy: {
             type: String,
             unique: false
-        }    },
+        },
+        comments: [Comment]
+    },
     {
         timestamps: Date.now,
         versionKey: false
