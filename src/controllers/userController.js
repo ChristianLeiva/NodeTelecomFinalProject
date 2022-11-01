@@ -118,8 +118,7 @@ const login = async(req, res) =>{
             const token = jwt.sign(payload, process.env.KEY )
 
             return res.status(200).send({
-                username: user.username,
-                _id: user._id,
+                user,
                 token
             })
         }        
