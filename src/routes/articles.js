@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getAllArticles, newArticle , updateArticle, deleteArticle, getArticlesByCreator, getAnArticlebyId, addComment} = require('../controllers/articleController')
+const {getAllArticles, newArticle , updateArticle, deleteArticle, getArticlesByCreator, getAnArticlebyId, addComment, giveLike} = require('../controllers/articleController')
 const {verifyIsLogged, verifyIsCreator} =  require('../middleware/user.middleware')
 
 router.get('/', getAllArticles)
@@ -10,6 +10,8 @@ router.get('/articlesByCreator', verifyIsLogged , getArticlesByCreator)
 
 // get article by id
 router.get('/:id', getAnArticlebyId)
+
+router.post('/like/:articleId', verifyIsLogged, giveLike)
 
 router.post('/', verifyIsLogged, newArticle)
 

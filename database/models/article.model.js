@@ -8,6 +8,14 @@ const Comment = new mongoose.Schema({
     timestamps: Date.now,
     versionKey: false
 })
+const Like = new mongoose.Schema({
+    username: String,
+},
+{
+    timestamps: Date.now,
+    versionKey: false
+})
+
 
 
 const Article = new mongoose.Schema(
@@ -39,7 +47,8 @@ const Article = new mongoose.Schema(
             type: String,
             unique: false
         },
-        comments: [Comment]
+        comments: [Comment],
+        likes: [Like]
     },
     {
         timestamps: Date.now,

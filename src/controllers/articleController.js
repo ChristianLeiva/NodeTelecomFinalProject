@@ -150,7 +150,6 @@ const addComment = async(req, res)=>{
         if(!article){
             return res.status(404).send("Article not found");
         }
-
         Joi.assert(req.body, commentSchema)
         article.comments.push({username, ...req.body })
         await articleModel.updateOne({_id: articleId}, article)
@@ -165,6 +164,35 @@ const addComment = async(req, res)=>{
 
 }
 
+const giveLike = async(req, res) =>{
+    try {
+        const {articleId} = req.params
+        const {username} = req.userData
+        const article = await articleModel.findOne({_id: articleId})
+        if(!article) return res.status(404).send({
+            code: "bad request",
+            msg : "Article not found"
+        })
+
+        const {likes} = article
+        const index = likes.findIndex( (like) => like.username === username)
+        if(index >= 0){
+            likes.splice(index, 1)
+            await articleModel.updateOne({_id: articleId}, article)
+            return res.status(200).send(article)           
+        }
+        article.likes.push({username})
+        await articleModel.updateOne({_id: articleId}, article)
+        return res.status(200).send(article)
+              
+    } catch (error) {
+        res.status(400).send({
+            code: "Bad request",
+            error
+        }) 
+    }
+}
+
 module.exports = {
     getAllArticles,
     getAnArticlebyTitle,
@@ -173,5 +201,6 @@ module.exports = {
     newArticle,
     updateArticle,
     deleteArticle,
-    addComment
+    addComment,
+    giveLike
 }
