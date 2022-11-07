@@ -34,14 +34,15 @@ const getAnArticlebyId = async(req, res) =>{
     }
 }
 const getAnArticlebyTitle = async(req, res) =>{
+
     try {
-        const result = await articleModel.findOne({
+        const result = await articleModel.find({
             title : {$regex: '.*' + req.params.title + '.*', $options: '-i' }
         })        
         if(!result){
-           return res.status(404).send("Article don't found")
+           return res.status(404).send([])
         }else{
-            return res.status(200).send(result )
+            return res.status(200).send(result)
         }
     } catch (error) {
         res.status(400).send({
@@ -86,8 +87,8 @@ const updateArticle = async(req, res) =>{
                     {_id : req.params.id},
                     {
                     title: data.title,
-                    subtitle: data.description,
-                    description: data.data,
+                    subtitle: data.subtitle,
+                    description: data.description,
                     image: data.image
                 })
                 return res.status(200).send("Article update succefuly")
